@@ -24,6 +24,7 @@ import { Select } from "@/components/ui/select"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Edit, AlertTriangle } from "lucide-react"
 import { format, isAfter, differenceInDays } from "date-fns"
+import { LoadingSpinner } from "@/components/ui/LoadingSpinner"
 
 interface Subscription {
   _id: string
@@ -155,7 +156,9 @@ export default function SubscriptionsPage() {
         </CardHeader>
         <CardContent>
           {loading ? (
-            <p>Loading...</p>
+            <div className="flex items-center justify-center py-12">
+              <LoadingSpinner size="lg" text="Loading subscriptions..." />
+            </div>
           ) : (
             <Table>
               <TableHeader>

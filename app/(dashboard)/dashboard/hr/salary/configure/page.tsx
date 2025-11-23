@@ -24,6 +24,7 @@ import {
 import { Select } from "@/components/ui/select"
 import { Badge } from "@/components/ui/badge"
 import { Settings, Plus, Trash2, Edit } from "lucide-react"
+import { LoadingSpinner } from "@/components/ui/LoadingSpinner"
 
 interface Employee {
   _id: string
@@ -194,8 +195,8 @@ export default function HRSalaryConfigurePage() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-64">
-        <p>Loading...</p>
+      <div className="flex items-center justify-center min-h-[400px]">
+        <LoadingSpinner size="lg" text="Loading salary configuration..." />
       </div>
     )
   }

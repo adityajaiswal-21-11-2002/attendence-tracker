@@ -17,6 +17,7 @@ import { Label } from "@/components/ui/label"
 import { Select } from "@/components/ui/select"
 import { Plus, Copy, Users, Loader2, CheckSquare } from "lucide-react"
 import Link from "next/link"
+import { LoadingSpinner } from "@/components/ui/LoadingSpinner"
 import { format, startOfWeek, endOfWeek, addWeeks, startOfMonth, endOfMonth } from "date-fns"
 import { useToast } from "@/hooks/use-toast"
 
@@ -318,7 +319,9 @@ export default function RosterPage() {
       </div>
 
       {loading ? (
-        <p>Loading roster...</p>
+        <div className="flex items-center justify-center min-h-[400px]">
+          <LoadingSpinner size="lg" text="Loading roster..." />
+        </div>
       ) : (
         <RosterCalendar
           events={events}

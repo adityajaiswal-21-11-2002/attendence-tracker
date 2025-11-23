@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/table"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { Loader2 } from "lucide-react"
+import { LoadingSpinner } from "@/components/ui/LoadingSpinner"
 
 interface AttendanceReportProps {
   dateRange: { startDate: string; endDate: string }
@@ -50,8 +50,8 @@ export default function AttendanceReport({ dateRange, filters }: AttendanceRepor
   if (loading) {
     return (
       <Card>
-        <CardContent className="flex items-center justify-center h-64">
-          <Loader2 className="h-8 w-8 animate-spin" />
+        <CardContent className="flex items-center justify-center min-h-[300px]">
+          <LoadingSpinner size="lg" text="Loading attendance report..." />
         </CardContent>
       </Card>
     )

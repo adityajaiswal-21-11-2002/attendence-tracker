@@ -11,7 +11,7 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { Badge } from "@/components/ui/badge"
-import { Loader2 } from "lucide-react"
+import { LoadingSpinner } from "@/components/ui/LoadingSpinner"
 import { format } from "date-fns"
 
 interface LeaveReportProps {
@@ -78,8 +78,8 @@ export default function LeaveReport({ dateRange, filters }: LeaveReportProps) {
   if (loading) {
     return (
       <Card>
-        <CardContent className="flex items-center justify-center h-64">
-          <Loader2 className="h-8 w-8 animate-spin" />
+        <CardContent className="flex items-center justify-center min-h-[300px]">
+          <LoadingSpinner size="lg" text="Loading leave report..." />
         </CardContent>
       </Card>
     )

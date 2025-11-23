@@ -27,6 +27,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Select } from "@/components/ui/select"
 import { Settings, Download, RefreshCw, Plus, Calendar, CheckCircle, XCircle, Loader2 } from "lucide-react"
 import { format } from "date-fns"
+import { LoadingSpinner } from "@/components/ui/LoadingSpinner"
 
 interface Employee {
   _id: string
@@ -337,8 +338,8 @@ export default function HRLeavesPage() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-64">
-        <p>Loading...</p>
+      <div className="flex items-center justify-center min-h-[400px]">
+        <LoadingSpinner size="lg" text="Loading leave data..." />
       </div>
     )
   }

@@ -14,6 +14,7 @@ import Link from "next/link"
 import { format } from "date-fns"
 import { cn } from "@/lib/utils"
 import { usePathname } from "next/navigation"
+import { LoadingSpinner } from "@/components/ui/LoadingSpinner"
 
 interface Notification {
   _id: string
@@ -146,8 +147,8 @@ export function NotificationBell() {
         </div>
         <div className="max-h-96 overflow-y-auto">
           {loading ? (
-            <div className="p-4 text-center text-sm text-muted-foreground">
-              Loading...
+            <div className="p-4 flex items-center justify-center">
+              <LoadingSpinner size="sm" text="Loading notifications..." />
             </div>
           ) : notifications.length === 0 ? (
             <div className="p-4 text-center text-sm text-muted-foreground">

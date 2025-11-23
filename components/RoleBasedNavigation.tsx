@@ -140,23 +140,27 @@ export function RoleBasedNavigation({ user, companyName }: RoleBasedNavigationPr
         <NotificationBell />
       </div>
       <nav className="flex-1 space-y-1 px-3 py-4 overflow-y-auto">
-        {filteredItems.map((item) => {
-          // Check for exact match first
-          const isExactMatch = pathname === item.href
-          // For startsWith check, ensure it's not matching a parent route when we're on a child route
-          // Only match if pathname starts with item.href + "/" AND no other menu item's href is a closer match
-          const isChildMatch = pathname?.startsWith(item.href + "/")
+        {(() => {
+          // Find the most specific matching item (longest href that matches the pathname)
+          // Calculate once for all items to improve performance
+          const matchingItems = filteredItems.filter((navItem) => {
+            // Exact match
+            if (pathname === navItem.href) return true
+            // Pathname starts with the nav item href followed by "/" (child route)
+            if (pathname?.startsWith(navItem.href + "/")) return true
+            return false
+          })
           
-          // Check if any other menu item has a longer href that matches the current pathname
-          // This prevents parent routes from being active when on child routes
-          const hasCloserMatch = filteredItems.some(
-            (otherItem) =>
-              otherItem.href !== item.href &&
-              otherItem.href.length > item.href.length &&
-              pathname?.startsWith(otherItem.href)
-          )
+          // If there are multiple matches, use the one with the longest href (most specific)
+          const mostSpecificMatch = matchingItems.length > 0
+            ? matchingItems.reduce((prev, current) =>
+                current.href.length > prev.href.length ? current : prev
+              )
+            : null
           
-          const isActive = isExactMatch || (isChildMatch && !hasCloserMatch)
+          return filteredItems.map((item) => {
+            // Only mark as active if this is the most specific match
+            const isActive = mostSpecificMatch?.href === item.href
           
           return (
             <Link
@@ -173,7 +177,8 @@ export function RoleBasedNavigation({ user, companyName }: RoleBasedNavigationPr
               {item.name}
             </Link>
           )
-        })}
+        })
+        })()}
       </nav>
       <div className="border-t p-4">
         <div className="mb-2 px-2">

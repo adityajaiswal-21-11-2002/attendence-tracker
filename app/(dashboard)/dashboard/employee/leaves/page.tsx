@@ -19,6 +19,7 @@ import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Calendar, CalendarDays, Clock, FileText } from "lucide-react"
 import { format } from "date-fns"
+import { LoadingSpinner } from "@/components/ui/LoadingSpinner"
 
 interface LeaveBalance {
   earnedLeave: { total: number; used: number; available: number }
@@ -150,8 +151,8 @@ export default function EmployeeLeavesPage() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-64">
-        <p>Loading...</p>
+      <div className="flex items-center justify-center min-h-[400px]">
+        <LoadingSpinner size="lg" text="Loading leave data..." />
       </div>
     )
   }

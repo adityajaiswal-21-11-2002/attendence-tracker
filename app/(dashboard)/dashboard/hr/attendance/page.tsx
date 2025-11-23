@@ -19,6 +19,7 @@ import { Badge } from "@/components/ui/badge"
 import { StatusCard } from "@/components/attendance/status-card"
 import { Download, RefreshCw, FileText, Calendar, Loader2 } from "lucide-react"
 import { format } from "date-fns"
+import { LoadingSpinner } from "@/components/ui/LoadingSpinner"
 
 interface EmployeeStatus {
   _id: string
@@ -334,7 +335,9 @@ export default function HRAttendancePage() {
       {/* Employee Status Grid */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {loading ? (
-          <p>Loading...</p>
+          <div className="col-span-full flex items-center justify-center py-12">
+            <LoadingSpinner size="lg" text="Loading attendance data..." />
+          </div>
         ) : filteredEmployees.length === 0 ? (
           <p className="text-muted-foreground">No employees found</p>
         ) : (

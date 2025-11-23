@@ -25,6 +25,7 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { CheckCircle, XCircle, Calendar } from "lucide-react"
 import { format } from "date-fns"
+import { LoadingSpinner } from "@/components/ui/LoadingSpinner"
 
 interface Leave {
   _id: string
@@ -133,8 +134,8 @@ export default function TeamLeadLeavesPage() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-64">
-        <p>Loading...</p>
+      <div className="flex items-center justify-center min-h-[400px]">
+        <LoadingSpinner size="lg" text="Loading leave data..." />
       </div>
     )
   }

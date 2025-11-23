@@ -18,6 +18,7 @@ import { StatusCard } from "@/components/attendance/status-card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Download, Edit, RefreshCw, Users, FileText } from "lucide-react"
 import { format } from "date-fns"
+import { LoadingSpinner } from "@/components/ui/LoadingSpinner"
 import {
   Dialog,
   DialogContent,
@@ -282,7 +283,9 @@ export default function OperationsAttendancePage() {
         <TabsContent value="overview" className="space-y-4">
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             {loading ? (
-              <p>Loading...</p>
+              <div className="col-span-full flex items-center justify-center py-12">
+                <LoadingSpinner size="lg" text="Loading attendance data..." />
+              </div>
             ) : filteredEmployees.length === 0 ? (
               <p className="text-muted-foreground">No employees found</p>
             ) : (
@@ -317,8 +320,8 @@ export default function OperationsAttendancePage() {
                 <TableBody>
                   {loading ? (
                     <TableRow>
-                      <TableCell colSpan={6} className="text-center">
-                        Loading...
+                      <TableCell colSpan={6} className="text-center py-12">
+                        <LoadingSpinner size="md" text="Loading attendance data..." />
                       </TableCell>
                     </TableRow>
                   ) : filteredEmployees.length === 0 ? (

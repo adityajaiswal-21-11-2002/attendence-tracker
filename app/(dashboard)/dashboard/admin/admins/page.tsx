@@ -23,6 +23,7 @@ import { Label } from "@/components/ui/label"
 import { Select } from "@/components/ui/select"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Plus, Edit, Trash2 } from "lucide-react"
+import { LoadingSpinner } from "@/components/ui/LoadingSpinner"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -174,7 +175,9 @@ export default function AdminsPage() {
         </CardHeader>
         <CardContent>
           {loading ? (
-            <p>Loading...</p>
+            <div className="flex items-center justify-center py-12">
+              <LoadingSpinner size="lg" text="Loading admins..." />
+            </div>
           ) : (
             <Table>
               <TableHeader>

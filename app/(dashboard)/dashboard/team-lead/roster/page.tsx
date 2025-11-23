@@ -16,6 +16,7 @@ import { Label } from "@/components/ui/label"
 import { Select } from "@/components/ui/select"
 import { Copy, Users } from "lucide-react"
 import { format, startOfWeek, endOfWeek } from "date-fns"
+import { LoadingSpinner } from "@/components/ui/LoadingSpinner"
 
 interface RosterEvent {
   id: string
@@ -204,7 +205,9 @@ export default function TeamLeadRosterPage() {
       </div>
 
       {loading ? (
-        <p>Loading roster...</p>
+        <div className="flex items-center justify-center min-h-[400px]">
+          <LoadingSpinner size="lg" text="Loading roster..." />
+        </div>
       ) : (
         <RosterCalendar
           events={events}

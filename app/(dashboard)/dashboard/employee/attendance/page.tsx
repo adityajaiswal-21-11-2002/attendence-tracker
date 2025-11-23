@@ -8,6 +8,7 @@ import { LogIn, LogOut, Coffee, Play, Pause } from "lucide-react"
 import { format, differenceInHours, differenceInMinutes, startOfMonth, endOfMonth, subMonths } from "date-fns"
 import { Badge } from "@/components/ui/badge"
 import { useToast } from "@/hooks/use-toast"
+import { LoadingSpinner } from "@/components/ui/LoadingSpinner"
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -509,7 +510,9 @@ export default function EmployeeAttendancePage() {
         </CardHeader>
         <CardContent>
           {loading ? (
-            <p>Loading tasks...</p>
+            <div className="flex items-center justify-center py-8">
+              <LoadingSpinner size="md" text="Loading tasks..." />
+            </div>
           ) : tasks.length === 0 ? (
             <p className="text-muted-foreground">No tasks assigned for today</p>
           ) : (
@@ -621,8 +624,8 @@ export default function EmployeeAttendancePage() {
               </p>
 
               {historyLoading ? (
-                <div className="text-center py-8">
-                  <p className="text-muted-foreground">Loading attendance history...</p>
+                <div className="flex items-center justify-center py-12">
+                  <LoadingSpinner size="md" text="Loading attendance history..." />
                 </div>
               ) : history.length === 0 ? (
                 <div className="text-center py-8">

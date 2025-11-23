@@ -15,6 +15,7 @@ import { Badge } from "@/components/ui/badge"
 import { Select } from "@/components/ui/select"
 import { Download, Calendar, DollarSign } from "lucide-react"
 import { format } from "date-fns"
+import { LoadingSpinner } from "@/components/ui/LoadingSpinner"
 
 interface SalaryConfig {
   salaryType: string
@@ -102,8 +103,8 @@ export default function EmployeeSalaryPage() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-64">
-        <p>Loading...</p>
+      <div className="flex items-center justify-center min-h-[400px]">
+        <LoadingSpinner size="lg" text="Loading salary information..." />
       </div>
     )
   }

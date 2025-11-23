@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Loader2 } from "lucide-react"
+import { LoadingSpinner } from "@/components/ui/LoadingSpinner"
 
 interface ActivityChartsProps {
   dateRange: { startDate: string; endDate: string }
@@ -38,8 +38,8 @@ export default function ActivityCharts({ dateRange, filters }: ActivityChartsPro
   if (loading) {
     return (
       <Card>
-        <CardContent className="flex items-center justify-center h-64">
-          <Loader2 className="h-8 w-8 animate-spin" />
+        <CardContent className="flex items-center justify-center min-h-[300px]">
+          <LoadingSpinner size="lg" text="Loading activity charts..." />
         </CardContent>
       </Card>
     )

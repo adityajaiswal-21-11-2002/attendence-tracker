@@ -24,6 +24,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { Select } from "@/components/ui/select"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Plus, Edit, Trash2 } from "lucide-react"
+import { LoadingSpinner } from "@/components/ui/LoadingSpinner"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -196,7 +197,9 @@ export default function TeamLeadTasksPage() {
         </CardHeader>
         <CardContent>
           {loading ? (
-            <p>Loading tasks...</p>
+            <div className="flex items-center justify-center py-12">
+              <LoadingSpinner size="lg" text="Loading tasks..." />
+            </div>
           ) : (
             <Table>
               <TableHeader>

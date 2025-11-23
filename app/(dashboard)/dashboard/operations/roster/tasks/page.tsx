@@ -25,6 +25,7 @@ import { Select } from "@/components/ui/select"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Plus, Edit, Trash2, Calendar } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
+import { LoadingSpinner } from "@/components/ui/LoadingSpinner"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -313,7 +314,9 @@ export default function TasksPage() {
         </CardHeader>
         <CardContent>
           {loading ? (
-            <p>Loading tasks...</p>
+            <div className="flex items-center justify-center py-12">
+              <LoadingSpinner size="lg" text="Loading tasks..." />
+            </div>
           ) : (
             <Table>
               <TableHeader>
