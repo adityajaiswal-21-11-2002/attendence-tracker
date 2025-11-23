@@ -1,0 +1,437 @@
+"use client"
+
+import { useState, useEffect } from "react"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Select } from "@/components/ui/select"
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table"
+import { StatusCard } from "@/components/attendance/status-card"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Download, Edit, RefreshCw, Users, FileText } from "lucide-react"
+import { format } from "date-fns"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog"
+
+interface EmployeeStatus {
+  _id: string
+  name: string
+  email: string
+  role: string
+  status: "logged_in" | "on_break" | "logged_out"
+  loginTime?: string
+  currentShift?: string
+  totalHours?: number
+}
+
+export default function OperationsAttendancePage() {
+  const [employees, setEmployees] = useState<EmployeeStatus[]>([])
+  const [filteredEmployees, setFilteredEmployees] = useState<EmployeeStatus[]>([])
+  const [loading, setLoading] = useState(true)
+  const [filters, setFilters] = useState({
+    role: "all",
+    status: "all",
+    date: new Date().toISOString().split("T")[0],
+  })
+  const [editDialogOpen, setEditDialogOpen] = useState(false)
+  const [selectedEmployee, setSelectedEmployee] = useState<EmployeeStatus | null>(null)
+  const [editData, setEditData] = useState({
+    loginTime: "",
+    logoutTime: "",
+    totalHours: "",
+  })
+
+  useEffect(() => {
+    fetchAttendance()
+    // Poll for updates every 10 seconds
+    const interval = setInterval(fetchAttendance, 10000)
+    return () => clearInterval(interval)
+  }, [filters.date])
+
+  useEffect(() => {
+    let filtered = [...employees]
+
+    if (filters.role !== "all") {
+      filtered = filtered.filter((emp) => emp.role === filters.role)
+    }
+
+    if (filters.status !== "all") {
+      filtered = filtered.filter((emp) => emp.status === filters.status)
+    }
+
+    setFilteredEmployees(filtered)
+  }, [employees, filters])
+
+  const fetchAttendance = async () => {
+    try {
+      const response = await fetch(
+        `/api/attendance/live-status?date=${filters.date}`
+      )
+      const data = await response.json()
+      setEmployees(data.employees || [])
+    } catch (error) {
+      console.error("Error fetching attendance:", error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handleExport = async () => {
+    try {
+      const response = await fetch(
+        `/api/attendance/export?date=${filters.date}&format=csv`
+      )
+      const blob = await response.blob()
+      const url = window.URL.createObjectURL(blob)
+      const a = document.createElement("a")
+      a.href = url
+      a.download = `attendance-${filters.date}.csv`
+      document.body.appendChild(a)
+      a.click()
+      window.URL.revokeObjectURL(url)
+      document.body.removeChild(a)
+    } catch (error) {
+      console.error("Error exporting attendance:", error)
+    }
+  }
+
+  const handleEdit = (employee: EmployeeStatus) => {
+    setSelectedEmployee(employee)
+    setEditData({
+      loginTime: employee.loginTime
+        ? format(new Date(employee.loginTime), "yyyy-MM-dd'T'HH:mm")
+        : "",
+      logoutTime: "",
+      totalHours: employee.totalHours?.toString() || "",
+    })
+    setEditDialogOpen(true)
+  }
+
+  const handleSaveEdit = async () => {
+    if (!selectedEmployee) return
+
+    try {
+      const response = await fetch(
+        `/api/attendance/manual-edit/${selectedEmployee._id}`,
+        {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            date: filters.date,
+            loginTime: editData.loginTime || undefined,
+            logoutTime: editData.logoutTime || undefined,
+            totalHours: editData.totalHours ? parseFloat(editData.totalHours) : undefined,
+          }),
+        }
+      )
+
+      if (response.ok) {
+        setEditDialogOpen(false)
+        fetchAttendance()
+      }
+    } catch (error) {
+      console.error("Error updating attendance:", error)
+    }
+  }
+
+  const getStatusCounts = () => {
+    const loggedIn = employees.filter((e) => e.status === "logged_in").length
+    const onBreak = employees.filter((e) => e.status === "on_break").length
+    const loggedOut = employees.filter((e) => e.status === "logged_out").length
+    return { loggedIn, onBreak, loggedOut, total: employees.length }
+  }
+
+  const counts = getStatusCounts()
+
+  return (
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold">Attendance Tracker</h1>
+          <p className="text-muted-foreground">
+            Monitor employee attendance in real-time
+          </p>
+        </div>
+        <div className="flex gap-2">
+          <Button variant="outline" onClick={fetchAttendance}>
+            <RefreshCw className="mr-2 h-4 w-4" />
+            Refresh
+          </Button>
+          <Button variant="outline" onClick={handleExport}>
+            <Download className="mr-2 h-4 w-4" />
+            Export CSV
+          </Button>
+        </div>
+      </div>
+
+      {/* Statistics */}
+      <div className="grid gap-4 md:grid-cols-4">
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm font-medium">Total Employees</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{counts.total}</div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm font-medium">Logged In</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-green-600">{counts.loggedIn}</div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm font-medium">On Break</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-yellow-600">{counts.onBreak}</div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm font-medium">Logged Out</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-gray-600">{counts.loggedOut}</div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Filters */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Filters</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="date">Date</Label>
+              <Input
+                id="date"
+                type="date"
+                value={filters.date}
+                onChange={(e) =>
+                  setFilters({ ...filters, date: e.target.value })
+                }
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="role">Role</Label>
+              <Select
+                id="role"
+                value={filters.role}
+                onChange={(e) => setFilters({ ...filters, role: e.target.value })}
+              >
+                <option value="all">All Roles</option>
+                <option value="hr_manager">HR Manager</option>
+                <option value="operations_manager">Operations Manager</option>
+                <option value="team_lead">Team Lead</option>
+                <option value="employee">Employee</option>
+              </Select>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="status">Status</Label>
+              <Select
+                id="status"
+                value={filters.status}
+                onChange={(e) =>
+                  setFilters({ ...filters, status: e.target.value })
+                }
+              >
+                <option value="all">All Status</option>
+                <option value="logged_in">Logged In</option>
+                <option value="on_break">On Break</option>
+                <option value="logged_out">Logged Out</option>
+              </Select>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Tabs */}
+      <Tabs defaultValue="overview" className="space-y-4">
+        <TabsList>
+          <TabsTrigger value="overview">
+            <Users className="mr-2 h-4 w-4" />
+            Overview
+          </TabsTrigger>
+          <TabsTrigger value="detailed">
+            <FileText className="mr-2 h-4 w-4" />
+            Detailed Attendance Log
+          </TabsTrigger>
+        </TabsList>
+
+        {/* Overview Tab */}
+        <TabsContent value="overview" className="space-y-4">
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            {loading ? (
+              <p>Loading...</p>
+            ) : filteredEmployees.length === 0 ? (
+              <p className="text-muted-foreground">No employees found</p>
+            ) : (
+              filteredEmployees.map((employee) => (
+                <StatusCard key={employee._id} employee={employee} />
+              ))
+            )}
+          </div>
+        </TabsContent>
+
+        {/* Detailed Log Tab */}
+        <TabsContent value="detailed" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>Detailed Attendance Log</CardTitle>
+              <CardDescription>
+                Complete attendance records for {format(new Date(filters.date), "MMMM d, yyyy")}
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Employee</TableHead>
+                    <TableHead>Role</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead>Login Time</TableHead>
+                    <TableHead>Total Hours</TableHead>
+                    <TableHead className="text-right">Actions</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {loading ? (
+                    <TableRow>
+                      <TableCell colSpan={6} className="text-center">
+                        Loading...
+                      </TableCell>
+                    </TableRow>
+                  ) : filteredEmployees.length === 0 ? (
+                    <TableRow>
+                      <TableCell colSpan={6} className="text-center text-muted-foreground">
+                        No employees found
+                      </TableCell>
+                    </TableRow>
+                  ) : (
+                    filteredEmployees.map((employee) => (
+                      <TableRow key={employee._id}>
+                        <TableCell className="font-medium">{employee.name}</TableCell>
+                        <TableCell>{employee.role.replace("_", " ")}</TableCell>
+                        <TableCell>
+                          <span
+                            className={`rounded-full px-2 py-1 text-xs ${
+                              employee.status === "logged_in"
+                                ? "bg-green-100 text-green-800"
+                                : employee.status === "on_break"
+                                ? "bg-yellow-100 text-yellow-800"
+                                : "bg-gray-100 text-gray-800"
+                            }`}
+                          >
+                            {employee.status.replace("_", " ")}
+                          </span>
+                        </TableCell>
+                        <TableCell>
+                          {employee.loginTime
+                            ? format(new Date(employee.loginTime), "HH:mm:ss")
+                            : "N/A"}
+                        </TableCell>
+                        <TableCell>
+                          {employee.totalHours
+                            ? `${employee.totalHours.toFixed(2)} hrs`
+                            : "N/A"}
+                        </TableCell>
+                        <TableCell className="text-right">
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleEdit(employee)}
+                          >
+                            <Edit className="mr-2 h-4 w-4" />
+                            Edit
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    ))
+                  )}
+                </TableBody>
+              </Table>
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
+
+      {/* Edit Dialog */}
+      <Dialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Edit Attendance</DialogTitle>
+            <DialogDescription>
+              Manually correct attendance records for {selectedEmployee?.name}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <Label htmlFor="loginTime">Login Time</Label>
+              <Input
+                id="loginTime"
+                type="datetime-local"
+                value={editData.loginTime}
+                onChange={(e) =>
+                  setEditData({ ...editData, loginTime: e.target.value })
+                }
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="logoutTime">Logout Time</Label>
+              <Input
+                id="logoutTime"
+                type="datetime-local"
+                value={editData.logoutTime}
+                onChange={(e) =>
+                  setEditData({ ...editData, logoutTime: e.target.value })
+                }
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="totalHours">Total Hours</Label>
+              <Input
+                id="totalHours"
+                type="number"
+                step="0.01"
+                value={editData.totalHours}
+                onChange={(e) =>
+                  setEditData({ ...editData, totalHours: e.target.value })
+                }
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => setEditDialogOpen(false)}
+            >
+              Cancel
+            </Button>
+            <Button onClick={handleSaveEdit}>Save Changes</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </div>
+  )
+}
+
