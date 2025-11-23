@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -61,7 +61,7 @@ export default function OperationsAttendancePage() {
     // Poll for updates every 10 seconds
     const interval = setInterval(fetchAttendance, 10000)
     return () => clearInterval(interval)
-  }, [filters.date])
+  }, [fetchAttendance])
 
   useEffect(() => {
     let filtered = [...employees]
@@ -77,7 +77,7 @@ export default function OperationsAttendancePage() {
     setFilteredEmployees(filtered)
   }, [employees, filters])
 
-  const fetchAttendance = async () => {
+  const fetchAttendance = useCallback(async () => {
     try {
       const response = await fetch(
         `/api/attendance/live-status?date=${filters.date}`
@@ -89,7 +89,7 @@ export default function OperationsAttendancePage() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [filters.date])
 
   const handleExport = async () => {
     try {

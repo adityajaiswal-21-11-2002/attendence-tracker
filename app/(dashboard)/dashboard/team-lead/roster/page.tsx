@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 import { RosterCalendar } from "@/components/roster/roster-calendar"
 import { Button } from "@/components/ui/button"
 import {
@@ -62,9 +62,9 @@ export default function TeamLeadRosterPage() {
 
   useEffect(() => {
     fetchData()
-  }, [currentDate])
+  }, [fetchData])
 
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     try {
       const startDate = startOfWeek(currentDate, { weekStartsOn: 1 })
       const endDate = endOfWeek(currentDate, { weekStartsOn: 1 })
@@ -98,7 +98,7 @@ export default function TeamLeadRosterPage() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [currentDate])
 
   const handleSelectSlot = (slotInfo: { start: Date; end: Date }) => {
     setSelectedDate(slotInfo.start)

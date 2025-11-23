@@ -233,7 +233,7 @@ export default function TeamLeadTasksPage() {
                             Actions
                           </Button>
                         </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
+                        <DropdownMenuContent>
                           <DropdownMenuItem onClick={() => handleEdit(task)}>
                             <Edit className="mr-2 h-4 w-4" />
                             Edit

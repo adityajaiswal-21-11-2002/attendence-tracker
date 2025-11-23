@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -36,9 +36,9 @@ export default function NotificationsPage() {
     // Poll for new notifications every 30 seconds
     const interval = setInterval(fetchNotifications, 30000)
     return () => clearInterval(interval)
-  }, [filter])
+  }, [fetchNotifications])
 
-  const fetchNotifications = async () => {
+  const fetchNotifications = useCallback(async () => {
     try {
       const url =
         filter === "all"
@@ -52,7 +52,7 @@ export default function NotificationsPage() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [filter])
 
   const handleMarkAsRead = async (notificationId: string) => {
     try {

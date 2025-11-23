@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useRef } from "react"
+import { useState, useEffect, useRef, useCallback } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Timer } from "@/components/attendance/timer"
@@ -314,16 +314,16 @@ export default function EmployeeAttendancePage() {
     return formatTime(remaining)
   }
 
-  const fetchHistory = async () => {
+  const fetchHistory = useCallback(async () => {
     if (!startDate || !endDate) return
 
     const start = new Date(startDate)
     const end = new Date(endDate)
-    
+
     if (isNaN(start.getTime()) || isNaN(end.getTime())) {
       return
     }
-    
+
     if (end < start) {
       toast({
         title: "Invalid Date Range",
@@ -339,7 +339,7 @@ export default function EmployeeAttendancePage() {
         `/api/attendance/history?startDate=${startDate}&endDate=${endDate}`
       )
       const data = await response.json()
-      
+
       if (response.ok) {
         setHistory(data.history || [])
       } else {
@@ -359,12 +359,12 @@ export default function EmployeeAttendancePage() {
     } finally {
       setHistoryLoading(false)
     }
-  }
+  }, [startDate, endDate, toast])
 
   useEffect(() => {
     // Fetch history when date range changes
     fetchHistory()
-  }, [startDate, endDate])
+  }, [fetchHistory])
 
   return (
     <div className="space-y-6">
@@ -518,14 +518,14 @@ export default function EmployeeAttendancePage() {
           ) : (
             <div className="space-y-4">
               {tasks.map((task) => {
-                const isRunning =
+                const isRunning: boolean =
                   task.status === "in_progress" &&
-                  task.timeTracking?.startTime &&
-                  !task.timeTracking.endTime
-                const isPaused =
+                  !!task.timeTracking?.startTime &&
+                  !task.timeTracking?.endTime
+                const isPaused: boolean =
                   task.status === "paused" &&
-                  task.timeTracking?.startTime &&
-                  !task.timeTracking.endTime
+                  !!task.timeTracking?.startTime &&
+                  !task.timeTracking?.endTime
 
                 return (
                   <div

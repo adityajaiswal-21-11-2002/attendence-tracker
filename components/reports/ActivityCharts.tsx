@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner"
 
@@ -15,9 +15,9 @@ export default function ActivityCharts({ dateRange, filters }: ActivityChartsPro
 
   useEffect(() => {
     fetchCharts()
-  }, [dateRange, filters])
+  }, [fetchCharts, filters])
 
-  const fetchCharts = async () => {
+  const fetchCharts = useCallback(async () => {
     setLoading(true)
     try {
       const response = await fetch(
@@ -33,7 +33,7 @@ export default function ActivityCharts({ dateRange, filters }: ActivityChartsPro
     } finally {
       setLoading(false)
     }
-  }
+  }, [dateRange])
 
   if (loading) {
     return (

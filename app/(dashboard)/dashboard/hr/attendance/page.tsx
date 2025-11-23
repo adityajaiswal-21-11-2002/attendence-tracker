@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -80,11 +80,25 @@ export default function HRAttendancePage() {
     role: "all",
   })
 
+  const fetchAttendance = useCallback(async () => {
+    try {
+      const response = await fetch(
+        `/api/attendance/live-status?date=${filters.date}`
+      )
+      const data = await response.json()
+      setEmployees(data.employees || [])
+    } catch (error) {
+      console.error("Error fetching attendance:", error)
+    } finally {
+      setLoading(false)
+    }
+  }, [filters.date])
+
   useEffect(() => {
     fetchAttendance()
     const interval = setInterval(fetchAttendance, 10000)
     return () => clearInterval(interval)
-  }, [filters.date])
+  }, [fetchAttendance])
 
   useEffect(() => {
     let filtered = [...employees]
@@ -99,20 +113,6 @@ export default function HRAttendancePage() {
 
     setFilteredEmployees(filtered)
   }, [employees, filters])
-
-  const fetchAttendance = async () => {
-    try {
-      const response = await fetch(
-        `/api/attendance/live-status?date=${filters.date}`
-      )
-      const data = await response.json()
-      setEmployees(data.employees || [])
-    } catch (error) {
-      console.error("Error fetching attendance:", error)
-    } finally {
-      setLoading(false)
-    }
-  }
 
   const handleExport = async () => {
     try {

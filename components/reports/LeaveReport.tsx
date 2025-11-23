@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import {
   Table,
@@ -25,9 +25,9 @@ export default function LeaveReport({ dateRange, filters }: LeaveReportProps) {
 
   useEffect(() => {
     fetchReport()
-  }, [dateRange, filters])
+  }, [fetchReport])
 
-  const fetchReport = async () => {
+  const fetchReport = useCallback(async () => {
     setLoading(true)
     try {
       const response = await fetch("/api/reports/leave", {
@@ -45,7 +45,7 @@ export default function LeaveReport({ dateRange, filters }: LeaveReportProps) {
     } finally {
       setLoading(false)
     }
-  }
+  }, [dateRange, filters])
 
   const getLeaveTypeLabel = (type: string) => {
     switch (type) {

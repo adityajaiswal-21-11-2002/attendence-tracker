@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -95,9 +95,9 @@ export default function HRLeavesPage() {
   useEffect(() => {
     fetchData()
     fetchPendingLeaves()
-  }, [selectedYear])
+  }, [fetchData, fetchPendingLeaves])
 
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     try {
       const [employeesRes, balancesRes] = await Promise.all([
         fetch("/api/admin/employees"),
@@ -114,9 +114,9 @@ export default function HRLeavesPage() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [selectedYear])
 
-  const fetchPendingLeaves = async () => {
+  const fetchPendingLeaves = useCallback(async () => {
     try {
       const response = await fetch("/api/leaves/pending")
       const data = await response.json()
@@ -124,7 +124,7 @@ export default function HRLeavesPage() {
     } catch (error) {
       console.error("Error fetching pending leaves:", error)
     }
-  }
+  }, [])
 
   const handleConfigure = (employee: Employee) => {
     setSelectedEmployee(employee)

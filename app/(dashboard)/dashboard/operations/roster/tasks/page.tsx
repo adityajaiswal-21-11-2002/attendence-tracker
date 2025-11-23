@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 import { Button } from "@/components/ui/button"
 import {
   Table,
@@ -73,9 +73,9 @@ export default function TasksPage() {
 
   useEffect(() => {
     fetchData()
-  }, [])
+  }, [fetchData])
 
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     try {
       const [tasksRes, rostersRes, employeesRes] = await Promise.all([
         fetch("/api/roster/tasks"),
@@ -175,7 +175,7 @@ export default function TasksPage() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [toast])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -350,7 +350,7 @@ export default function TasksPage() {
                             Actions
                           </Button>
                         </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
+                        <DropdownMenuContent>
                           <DropdownMenuItem onClick={() => handleEdit(task)}>
                             <Edit className="mr-2 h-4 w-4" />
                             Edit

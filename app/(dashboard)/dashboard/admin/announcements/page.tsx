@@ -222,7 +222,7 @@ export default function AnnouncementsPage() {
                             Actions
                           </Button>
                         </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
+                        <DropdownMenuContent>
                           <DropdownMenuItem onClick={() => handleEdit(announcement)}>
                             <Edit className="mr-2 h-4 w-4" />
                             Edit

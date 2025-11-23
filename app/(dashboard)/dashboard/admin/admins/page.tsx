@@ -213,7 +213,7 @@ export default function AdminsPage() {
                             Actions
                           </Button>
                         </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
+                        <DropdownMenuContent>
                           <DropdownMenuItem onClick={() => handleEdit(admin)}>
                             <Edit className="mr-2 h-4 w-4" />
                             Edit

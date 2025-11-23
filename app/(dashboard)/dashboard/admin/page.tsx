@@ -143,9 +143,8 @@ export default async function AdminDashboard() {
   }
 
   const isPrimaryAdmin = user.role === "primary_admin"
-  const stats = isPrimaryAdmin
-    ? await getPrimaryAdminStats()
-    : await getSecondaryAdminStats(user.id, user.companyId)
+  const primaryAdminStats = isPrimaryAdmin ? await getPrimaryAdminStats() : null
+  const secondaryAdminStats = !isPrimaryAdmin ? await getSecondaryAdminStats(user.id, user.companyId) : null
 
   return (
     <div className="space-y-6">
@@ -166,7 +165,7 @@ export default async function AdminDashboard() {
                 <Building2 className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">{stats.totalCompanies || 0}</div>
+                <div className="text-2xl font-bold">{primaryAdminStats?.totalCompanies || 0}</div>
                 <p className="text-xs text-muted-foreground">Active companies</p>
               </CardContent>
             </Card>
@@ -177,7 +176,7 @@ export default async function AdminDashboard() {
                 <CreditCard className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">{stats.activeSubscriptions || 0}</div>
+                <div className="text-2xl font-bold">{primaryAdminStats?.activeSubscriptions || 0}</div>
                 <p className="text-xs text-muted-foreground">Current subscriptions</p>
               </CardContent>
             </Card>
@@ -188,7 +187,7 @@ export default async function AdminDashboard() {
                 <TrendingUp className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">₹{stats.totalRevenue?.toLocaleString() || 0}</div>
+                <div className="text-2xl font-bold">₹{primaryAdminStats?.totalRevenue?.toLocaleString() || 0}</div>
                 <p className="text-xs text-muted-foreground">Annual revenue</p>
               </CardContent>
             </Card>
@@ -199,7 +198,7 @@ export default async function AdminDashboard() {
                 <Users className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">{stats.totalAdmins || 0}</div>
+                <div className="text-2xl font-bold">{primaryAdminStats?.totalAdmins || 0}</div>
                 <p className="text-xs text-muted-foreground">Admin accounts</p>
               </CardContent>
             </Card>
@@ -241,8 +240,8 @@ export default async function AdminDashboard() {
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  {stats.recentActivities?.length > 0 ? (
-                    stats.recentActivities.map((activity: any, index: number) => (
+                  {primaryAdminStats?.recentActivities && primaryAdminStats.recentActivities.length > 0 ? (
+                    primaryAdminStats.recentActivities.map((activity: any, index: number) => (
                       <div key={index} className="flex items-center justify-between border-b pb-2">
                         <div>
                           <p className="text-sm font-medium">{activity.title}</p>
@@ -269,7 +268,7 @@ export default async function AdminDashboard() {
                 <Users className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">{stats.totalEmployees || 0}</div>
+                <div className="text-2xl font-bold">{secondaryAdminStats?.totalEmployees || 0}</div>
                 <p className="text-xs text-muted-foreground">Active employees</p>
               </CardContent>
             </Card>
@@ -280,7 +279,7 @@ export default async function AdminDashboard() {
                 <Clock className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">{stats.todayAttendance || 0}</div>
+                <div className="text-2xl font-bold">{secondaryAdminStats?.todayAttendance || 0}</div>
                 <p className="text-xs text-muted-foreground">Employees present</p>
               </CardContent>
             </Card>
@@ -291,7 +290,7 @@ export default async function AdminDashboard() {
                 <Calendar className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">{stats.todayAbsent || 0}</div>
+                <div className="text-2xl font-bold">{secondaryAdminStats?.todayAbsent || 0}</div>
                 <p className="text-xs text-muted-foreground">Employees absent</p>
               </CardContent>
             </Card>
@@ -302,7 +301,7 @@ export default async function AdminDashboard() {
                 <AlertCircle className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">{stats.pendingLeaves || 0}</div>
+                <div className="text-2xl font-bold">{secondaryAdminStats?.pendingLeaves || 0}</div>
                 <p className="text-xs text-muted-foreground">Awaiting approval</p>
               </CardContent>
             </Card>
@@ -338,8 +337,8 @@ export default async function AdminDashboard() {
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  {stats.recentLeaves?.length > 0 ? (
-                    stats.recentLeaves.map((leave: any, index: number) => (
+                  {secondaryAdminStats?.recentLeaves && secondaryAdminStats.recentLeaves.length > 0 ? (
+                    secondaryAdminStats.recentLeaves.map((leave: any, index: number) => (
                       <div key={index} className="flex items-center justify-between border-b pb-2">
                         <div>
                           <p className="text-sm font-medium">{leave.title}</p>

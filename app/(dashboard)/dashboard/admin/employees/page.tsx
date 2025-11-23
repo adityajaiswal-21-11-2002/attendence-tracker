@@ -370,7 +370,7 @@ export default function EmployeesPage() {
                             Actions
                           </Button>
                         </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
+                        <DropdownMenuContent>
                           <DropdownMenuItem onClick={() => handleEdit(employee)}>
                             <Edit className="mr-2 h-4 w-4" />
                             Edit

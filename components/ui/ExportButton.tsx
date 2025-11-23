@@ -59,7 +59,7 @@ export function ExportButton({
             )}
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="end">
+        <DropdownMenuContent>
           <DropdownMenuItem onClick={() => handleExport("excel")}>
             <FileSpreadsheet className="mr-2 h-4 w-4" />
             Export as Excel

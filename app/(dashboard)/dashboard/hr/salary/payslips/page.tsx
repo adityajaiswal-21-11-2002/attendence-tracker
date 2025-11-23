@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -59,9 +59,9 @@ export default function HRPayslipsPage() {
 
   useEffect(() => {
     fetchData()
-  }, [selectedMonth, selectedYear])
+  }, [fetchData])
 
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     try {
       const [payslipsRes, employeesRes] = await Promise.all([
         fetch(`/api/salary/payslips?month=${selectedMonth}&year=${selectedYear}`),
@@ -80,7 +80,7 @@ export default function HRPayslipsPage() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [selectedMonth, selectedYear])
 
   const handleGeneratePayslips = async () => {
     if (!confirm(`Generate payslips for all employees for ${format(new Date(selectedYear, selectedMonth - 1, 1), "MMMM yyyy")}?`)) {

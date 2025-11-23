@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Textarea } from "@/components/ui/textarea"
@@ -52,9 +52,9 @@ export default function OperationsLeavesPage() {
 
   useEffect(() => {
     fetchLeaves()
-  }, [selectedYear])
+  }, [fetchLeaves])
 
-  const fetchLeaves = async () => {
+  const fetchLeaves = useCallback(async () => {
     try {
       const [pendingRes, teamRes] = await Promise.all([
         fetch("/api/leaves/pending"),
@@ -71,7 +71,7 @@ export default function OperationsLeavesPage() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [selectedYear])
 
   const handleApprove = (leave: Leave) => {
     setSelectedLeave(leave)
