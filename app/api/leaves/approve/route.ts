@@ -5,6 +5,7 @@ import connectDB from "@/lib/mongodb"
 import Leave from "@/models/Leave"
 import LeaveBalance from "@/models/LeaveBalance"
 import User from "@/models/User"
+import mongoose from "mongoose"
 import { notifyLeaveStatus } from "@/lib/notifications"
 
 export async function PUT(request: Request) {
@@ -58,7 +59,7 @@ export async function PUT(request: Request) {
 
     // Update leave status
     leave.status = "approved"
-    leave.approvedBy = user.id
+    leave.approvedBy = new mongoose.Types.ObjectId(user.id)
     if (comments) {
       leave.comments = comments
     }

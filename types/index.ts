@@ -1,17 +1,15 @@
 // Re-export model interfaces for convenience
-export type {
-  IUser as User,
-} from "@/models/User"
+export type { IUser } from "@/models/User"
+export type User = import("@/models/User").IUser
 
 export type {
   ICompany as Company,
 } from "@/models/Company"
 
-export type {
-  IAttendance as Attendance,
-  IBreak as Break,
-  ITaskTime as TaskTime,
-} from "@/models/Attendance"
+export type { IAttendance, IBreak, ITaskTime } from "@/models/Attendance"
+export type Attendance = import("@/models/Attendance").IAttendance
+export type Break = import("@/models/Attendance").IBreak
+export type TaskTime = import("@/models/Attendance").ITaskTime
 
 export type {
   ILeave as Leave,

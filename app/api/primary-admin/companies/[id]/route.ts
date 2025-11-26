@@ -10,6 +10,7 @@ const companySchema = z.object({
   phone: z.string().optional(),
   address: z.string().optional(),
   subscriptionPlan: z.enum(["10_employees", "50_employees", "100_employees"]).optional(),
+  subscriptionPrice: z.number().optional(),
 })
 
 export async function PUT(

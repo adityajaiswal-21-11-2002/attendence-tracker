@@ -19,6 +19,7 @@ export interface IRoster extends Document {
     end: string
   }
   jobRole: string
+  location?: string
   tasks: IRosterTask[]
   createdBy: mongoose.Types.ObjectId
   createdAt: Date
@@ -89,6 +90,11 @@ const RosterSchema: Schema = new Schema(
       type: String,
       required: [true, "Please provide a job role"],
       trim: true,
+    },
+    location: {
+      type: String,
+      trim: true,
+      default: "",
     },
     tasks: {
       type: [RosterTaskSchema],

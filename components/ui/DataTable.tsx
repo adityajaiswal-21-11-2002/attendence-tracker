@@ -1,9 +1,6 @@
 "use client"
 
 import * as React from "react"
-"use client"
-
-import * as React from "react"
 import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
@@ -16,13 +13,13 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
+// import {
+//   Select,
+//   SelectContent,
+//   SelectItem,
+//   SelectTrigger,
+//   SelectValue,
+// } from "@/components/ui/select"
 
 export interface Column<T> {
   header: string
@@ -125,7 +122,7 @@ export function DataTable<T extends Record<string, any>>({
         <div className="flex items-center space-x-6 lg:space-x-8">
           <div className="flex items-center space-x-2">
             <p className="text-sm font-medium">Rows per page</p>
-            <Select
+            {/* <Select
               value={`${pageSize}`}
               onValueChange={(value) => {
                 setPageSize(Number(value))
@@ -142,7 +139,7 @@ export function DataTable<T extends Record<string, any>>({
                   </SelectItem>
                 ))}
               </SelectContent>
-            </Select>
+            </Select> */}
           </div>
           <div className="flex w-[100px] items-center justify-center text-sm font-medium">
             Page {currentPage} of {totalPages || 1}

@@ -33,10 +33,10 @@ export async function POST(request: Request) {
     const file = formData.get("file") as File
     const preview = formData.get("preview") === "true"
     const copyFromPeriod = formData.get("copyFromPeriod") === "true"
-    const sourceMonth = formData.get("sourceMonth")
-    const sourceYear = formData.get("sourceYear")
-    const targetMonth = formData.get("targetMonth")
-    const targetYear = formData.get("targetYear")
+    const sourceMonth = formData.get("sourceMonth") as string
+    const sourceYear = formData.get("sourceYear") as string
+    const targetMonth = formData.get("targetMonth") as string
+    const targetYear = formData.get("targetYear") as string
 
     await connectDB()
 

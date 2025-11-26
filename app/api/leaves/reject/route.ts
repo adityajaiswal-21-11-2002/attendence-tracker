@@ -4,6 +4,7 @@ import { canApproveLeaves } from "@/lib/auth"
 import connectDB from "@/lib/mongodb"
 import Leave from "@/models/Leave"
 import User from "@/models/User"
+import mongoose from "mongoose"
 import { notifyLeaveStatus } from "@/lib/notifications"
 
 export async function PUT(request: Request) {
@@ -64,7 +65,7 @@ export async function PUT(request: Request) {
 
     // Update leave status
     leave.status = "rejected"
-    leave.approvedBy = user.id
+    leave.approvedBy = new mongoose.Types.ObjectId(user.id)
     leave.comments = comments
     await leave.save()
 

@@ -3,6 +3,7 @@ import { getCurrentUser } from "@/lib/auth"
 import connectDB from "@/lib/mongodb"
 import User from "@/models/User"
 import { z } from "zod"
+import mongoose from "mongoose"
 
 const hierarchyUpdateSchema = z.object({
   employeeId: z.string().min(1),
@@ -82,7 +83,7 @@ export async function PUT(request: Request) {
       }
     }
 
-    employee.managerId = validatedData.managerId || undefined
+    employee.managerId = validatedData.managerId ? new mongoose.Types.ObjectId(validatedData.managerId) : undefined
     await employee.save()
 
     return NextResponse.json({ message: "Hierarchy updated successfully" })

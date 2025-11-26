@@ -43,7 +43,8 @@ export async function PUT(
     await admin.save()
 
     const adminObj = admin.toObject()
-    delete adminObj.password
+    // Remove sensitive password field
+    const { password, ...adminWithoutPassword } = adminObj
 
     return NextResponse.json({ admin: adminObj })
   } catch (error) {

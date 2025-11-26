@@ -10,6 +10,7 @@ export interface ITaskTime {
   startTime: Date
   pauseTime?: Date
   endTime?: Date
+  pausedDuration?: number // in minutes
   duration?: number // in minutes
 }
 
@@ -23,6 +24,7 @@ export interface IAttendance extends Document {
   breaks: IBreak[]
   totalHours?: number
   status: "present" | "absent" | "half_day" | "holiday" | "leave"
+  location?: string
   tasks: ITaskTime[]
   createdAt: Date
   updatedAt: Date
@@ -57,6 +59,11 @@ const TaskTimeSchema: Schema = new Schema(
     },
     endTime: {
       type: Date,
+    },
+    pausedDuration: {
+      type: Number,
+      default: 0,
+      min: 0,
     },
     duration: {
       type: Number,
@@ -101,6 +108,11 @@ const AttendanceSchema: Schema = new Schema(
       type: String,
       enum: ["present", "absent", "half_day", "holiday", "leave"],
       default: "absent",
+    },
+    location: {
+      type: String,
+      trim: true,
+      default: "",
     },
     tasks: {
       type: [TaskTimeSchema],

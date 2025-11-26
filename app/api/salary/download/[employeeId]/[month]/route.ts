@@ -61,7 +61,7 @@ export async function GET(
       payslip.companyId.toString()
     )
 
-    return new NextResponse(pdfBuffer, {
+    return new NextResponse(new Uint8Array(pdfBuffer), {
       headers: {
         "Content-Type": "application/pdf",
         "Content-Disposition": `attachment; filename="payslip-${params.employeeId}-${year}-${params.month}.pdf"`,

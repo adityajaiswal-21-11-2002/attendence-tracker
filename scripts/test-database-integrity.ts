@@ -357,8 +357,8 @@ async function testDatabaseIntegrity() {
 
   await runTest("INDEX-002: Attendance userId+date unique index exists", async () => {
     const indexes = await Attendance.collection.getIndexes()
-    const userIdDateIndex = Object.keys(indexes).find(key => 
-      indexes[key].userId === 1 && indexes[key].date === 1
+    const userIdDateIndex = Object.keys(indexes).find(key =>
+      (indexes as any)[key].userId === 1 && (indexes as any)[key].date === 1
     )
     if (!userIdDateIndex) {
       throw new Error("Attendance userId+date unique index not found")

@@ -61,16 +61,9 @@ export function RosterCalendar({
         </CardHeader>
         <CardContent>
           <Calendar
-            mode="single"
             selected={selectedDate}
             onSelect={handleDateSelect}
             className="rounded-md border"
-            modifiers={{
-              hasEvent: events.map((e) => new Date(e.date)),
-            }}
-            modifiersClassNames={{
-              hasEvent: "bg-blue-100 text-blue-900 font-semibold",
-            }}
           />
         </CardContent>
       </Card>
