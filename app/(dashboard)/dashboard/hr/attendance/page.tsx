@@ -27,7 +27,7 @@ interface EmployeeStatus {
   email: string
   role: string
   status: "logged_in" | "on_break" | "logged_out"
-  loginTime?: string
+  loginTime?: Date
   currentShift?: string
   totalHours?: number
 }
@@ -86,7 +86,11 @@ export default function HRAttendancePage() {
         `/api/attendance/live-status?date=${filters.date}`
       )
       const data = await response.json()
-      setEmployees(data.employees || [])
+      const employees = (data.employees || []).map((emp: any) => ({
+        ...emp,
+        loginTime: emp.loginTime ? new Date(emp.loginTime) : undefined
+      }))
+      setEmployees(employees)
     } catch (error) {
       console.error("Error fetching attendance:", error)
     } finally {
@@ -386,7 +390,7 @@ export default function HRAttendancePage() {
                   </TableCell>
                   <TableCell>
                     {employee.loginTime
-                      ? format(new Date(employee.loginTime), "HH:mm:ss")
+                      ? format(employee.loginTime, "HH:mm:ss")
                       : "N/A"}
                   </TableCell>
                   <TableCell>

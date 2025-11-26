@@ -71,10 +71,6 @@ export default function TasksPage() {
     dueDate: "",
   })
 
-  useEffect(() => {
-    fetchData()
-  }, [fetchData])
-
   const fetchData = useCallback(async () => {
     try {
       const [tasksRes, rostersRes, employeesRes] = await Promise.all([
@@ -176,6 +172,10 @@ export default function TasksPage() {
       setLoading(false)
     }
   }, [toast])
+
+  useEffect(() => {
+    fetchData()
+  }, [fetchData])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()

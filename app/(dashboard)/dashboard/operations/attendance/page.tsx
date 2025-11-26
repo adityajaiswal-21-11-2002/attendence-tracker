@@ -34,7 +34,7 @@ interface EmployeeStatus {
   email: string
   role: string
   status: "logged_in" | "on_break" | "logged_out"
-  loginTime?: string
+  loginTime?: Date
   currentShift?: string
   totalHours?: number
 }
@@ -57,13 +57,6 @@ export default function OperationsAttendancePage() {
   })
 
   useEffect(() => {
-    fetchAttendance()
-    // Poll for updates every 10 seconds
-    const interval = setInterval(fetchAttendance, 10000)
-    return () => clearInterval(interval)
-  }, [fetchAttendance])
-
-  useEffect(() => {
     let filtered = [...employees]
 
     if (filters.role !== "all") {
@@ -83,13 +76,24 @@ export default function OperationsAttendancePage() {
         `/api/attendance/live-status?date=${filters.date}`
       )
       const data = await response.json()
-      setEmployees(data.employees || [])
+      const employees = (data.employees || []).map((emp: any) => ({
+        ...emp,
+        loginTime: emp.loginTime ? new Date(emp.loginTime) : undefined
+      }))
+      setEmployees(employees)
     } catch (error) {
       console.error("Error fetching attendance:", error)
     } finally {
       setLoading(false)
     }
   }, [filters.date])
+
+  useEffect(() => {
+    fetchAttendance()
+    // Poll for updates every 10 seconds
+    const interval = setInterval(fetchAttendance, 10000)
+    return () => clearInterval(interval)
+  }, [fetchAttendance])
 
   const handleExport = async () => {
     try {
@@ -114,7 +118,7 @@ export default function OperationsAttendancePage() {
     setSelectedEmployee(employee)
     setEditData({
       loginTime: employee.loginTime
-        ? format(new Date(employee.loginTime), "yyyy-MM-dd'T'HH:mm")
+        ? format(employee.loginTime, "yyyy-MM-dd'T'HH:mm")
         : "",
       logoutTime: "",
       totalHours: employee.totalHours?.toString() || "",
@@ -350,7 +354,7 @@ export default function OperationsAttendancePage() {
                         </TableCell>
                         <TableCell>
                           {employee.loginTime
-                            ? format(new Date(employee.loginTime), "HH:mm:ss")
+                            ? format(employee.loginTime, "HH:mm:ss")
                             : "N/A"}
                         </TableCell>
                         <TableCell>

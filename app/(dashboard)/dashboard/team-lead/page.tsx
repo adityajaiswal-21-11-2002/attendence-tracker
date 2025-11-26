@@ -273,7 +273,7 @@ export default async function TeamLeadDashboard() {
           <CardContent>
             <div className="space-y-2">
               {stats.teamMembers.slice(0, 3).map((member) => (
-                <div key={member.id} className="text-sm">
+                <div key={member.id.toString()} className="text-sm">
                   {member.name}
                 </div>
               ))}

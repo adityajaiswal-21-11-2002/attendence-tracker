@@ -50,10 +50,6 @@ export default function OperationsLeavesPage() {
   const [comments, setComments] = useState("")
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear())
 
-  useEffect(() => {
-    fetchLeaves()
-  }, [fetchLeaves])
-
   const fetchLeaves = useCallback(async () => {
     try {
       const [pendingRes, teamRes] = await Promise.all([
@@ -72,6 +68,10 @@ export default function OperationsLeavesPage() {
       setLoading(false)
     }
   }, [selectedYear])
+
+  useEffect(() => {
+    fetchLeaves()
+  }, [fetchLeaves])
 
   const handleApprove = (leave: Leave) => {
     setSelectedLeave(leave)

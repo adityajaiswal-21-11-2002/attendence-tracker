@@ -23,10 +23,6 @@ export default function AttendanceReport({ dateRange, filters }: AttendanceRepor
   const [data, setData] = useState<any>(null)
   const [loading, setLoading] = useState(true)
 
-  useEffect(() => {
-    fetchReport()
-  }, [fetchReport])
-
   const fetchReport = useCallback(async () => {
     setLoading(true)
     try {
@@ -46,6 +42,10 @@ export default function AttendanceReport({ dateRange, filters }: AttendanceRepor
       setLoading(false)
     }
   }, [dateRange, filters])
+
+  useEffect(() => {
+    fetchReport()
+  }, [fetchReport])
 
   if (loading) {
     return (

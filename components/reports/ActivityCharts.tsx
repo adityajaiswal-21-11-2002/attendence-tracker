@@ -13,10 +13,6 @@ export default function ActivityCharts({ dateRange, filters }: ActivityChartsPro
   const [data, setData] = useState<any>(null)
   const [loading, setLoading] = useState(true)
 
-  useEffect(() => {
-    fetchCharts()
-  }, [fetchCharts, filters])
-
   const fetchCharts = useCallback(async () => {
     setLoading(true)
     try {
@@ -34,6 +30,10 @@ export default function ActivityCharts({ dateRange, filters }: ActivityChartsPro
       setLoading(false)
     }
   }, [dateRange])
+
+  useEffect(() => {
+    fetchCharts()
+  }, [fetchCharts, filters])
 
   if (loading) {
     return (

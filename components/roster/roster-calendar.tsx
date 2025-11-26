@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button"
 import { ChevronLeft, ChevronRight, Calendar as CalendarIcon } from "lucide-react"
 import moment from "moment"
 
-interface RosterEvent extends Event {
+export interface RosterEvent extends Event {
   id: string
   userId: string
   userName: string

@@ -141,7 +141,7 @@ export async function POST(request: Request) {
     })
 
     const employeeObj = employee.toObject()
-    delete employeeObj.password
+    delete (employeeObj as any).password
 
     return NextResponse.json({ employee: employeeObj }, { status: 201 })
   } catch (error) {

@@ -31,13 +31,6 @@ export default function NotificationsPage() {
   const [filter, setFilter] = useState<string>("all")
   const [loading, setLoading] = useState(true)
 
-  useEffect(() => {
-    fetchNotifications()
-    // Poll for new notifications every 30 seconds
-    const interval = setInterval(fetchNotifications, 30000)
-    return () => clearInterval(interval)
-  }, [fetchNotifications])
-
   const fetchNotifications = useCallback(async () => {
     try {
       const url =
@@ -53,6 +46,13 @@ export default function NotificationsPage() {
       setLoading(false)
     }
   }, [filter])
+
+  useEffect(() => {
+    fetchNotifications()
+    // Poll for new notifications every 30 seconds
+    const interval = setInterval(fetchNotifications, 30000)
+    return () => clearInterval(interval)
+  }, [fetchNotifications])
 
   const handleMarkAsRead = async (notificationId: string) => {
     try {

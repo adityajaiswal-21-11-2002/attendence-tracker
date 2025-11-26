@@ -22,10 +22,6 @@ export default function SalaryReport({ dateRange, filters }: SalaryReportProps) 
   const [data, setData] = useState<any>(null)
   const [loading, setLoading] = useState(true)
 
-  useEffect(() => {
-    fetchReport()
-  }, [fetchReport])
-
   const fetchReport = useCallback(async () => {
     setLoading(true)
     try {
@@ -45,6 +41,10 @@ export default function SalaryReport({ dateRange, filters }: SalaryReportProps) 
       setLoading(false)
     }
   }, [dateRange, filters])
+
+  useEffect(() => {
+    fetchReport()
+  }, [fetchReport])
 
   if (loading) {
     return (

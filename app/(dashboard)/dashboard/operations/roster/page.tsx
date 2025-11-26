@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react"
 import { RosterCalendar } from "@/components/roster/roster-calendar"
+import type { RosterEvent } from "@/components/roster/roster-calendar"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import {
@@ -21,24 +22,6 @@ import { LoadingSpinner } from "@/components/ui/LoadingSpinner"
 import { format, startOfWeek, endOfWeek, addWeeks, startOfMonth, endOfMonth } from "date-fns"
 import { useToast } from "@/hooks/use-toast"
 
-interface RosterEvent {
-  id: string
-  start: Date
-  end: Date
-  title?: string
-  userId: string
-  userName: string
-  shiftType: string
-  shiftTime: {
-    start: string
-    end: string
-  }
-  jobRole: string
-  tasks?: Array<{
-    title: string
-    description: string
-  }>
-}
 
 interface Employee {
   _id: string
@@ -65,10 +48,6 @@ export default function RosterPage() {
     shiftEnd: "18:00",
     jobRole: "",
   })
-
-  useEffect(() => {
-    fetchData()
-  }, [fetchData])
 
   const fetchData = useCallback(async () => {
     try {
@@ -147,6 +126,10 @@ export default function RosterPage() {
     }
   }, [currentDate, toast])
 
+  useEffect(() => {
+    fetchData()
+  }, [fetchData])
+
   const handleSelectSlot = (slotInfo: { start: Date; end: Date }) => {
     setSelectedDate(slotInfo.start)
     setSelectedEvent(null)
@@ -161,8 +144,8 @@ export default function RosterPage() {
   }
 
   const handleSelectEvent = (event: RosterEvent) => {
-    setSelectedEvent(event)
-    setSelectedDate(event.start)
+    setSelectedEvent(event as RosterEvent)
+    setSelectedDate(event.start!)
     setFormData({
       userId: event.userId,
       shiftType: event.shiftType,

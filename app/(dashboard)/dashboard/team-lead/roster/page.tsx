@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect, useCallback } from "react"
-import { RosterCalendar } from "@/components/roster/roster-calendar"
+import { RosterCalendar, RosterEvent } from "@/components/roster/roster-calendar"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -17,24 +17,6 @@ import { Select } from "@/components/ui/select"
 import { Copy, Users } from "lucide-react"
 import { format, startOfWeek, endOfWeek } from "date-fns"
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner"
-
-interface RosterEvent {
-  id: string
-  start: Date
-  end: Date
-  userId: string
-  userName: string
-  shiftType: string
-  shiftTime: {
-    start: string
-    end: string
-  }
-  jobRole: string
-  tasks?: Array<{
-    title: string
-    description: string
-  }>
-}
 
 interface Employee {
   _id: string
@@ -59,10 +41,6 @@ export default function TeamLeadRosterPage() {
     shiftEnd: "18:00",
     jobRole: "",
   })
-
-  useEffect(() => {
-    fetchData()
-  }, [fetchData])
 
   const fetchData = useCallback(async () => {
     try {
@@ -100,6 +78,10 @@ export default function TeamLeadRosterPage() {
     }
   }, [currentDate])
 
+  useEffect(() => {
+    fetchData()
+  }, [fetchData])
+
   const handleSelectSlot = (slotInfo: { start: Date; end: Date }) => {
     setSelectedDate(slotInfo.start)
     setSelectedEvent(null)
@@ -115,7 +97,7 @@ export default function TeamLeadRosterPage() {
 
   const handleSelectEvent = (event: RosterEvent) => {
     setSelectedEvent(event)
-    setSelectedDate(event.start)
+    setSelectedDate(event.start || null)
     setFormData({
       userId: event.userId,
       shiftType: event.shiftType,

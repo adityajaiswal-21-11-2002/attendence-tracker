@@ -26,7 +26,7 @@ export default function ReportsPage() {
   })
   const [generating, setGenerating] = useState(false)
 
-  const handleExport = async (format: "excel" | "pdf" | "csv") => {
+  const handleExport = async (exportFormat: "excel" | "pdf" | "csv") => {
     setGenerating(true)
     try {
       const response = await fetch("/api/reports/export", {
@@ -45,7 +45,7 @@ export default function ReportsPage() {
         const url = window.URL.createObjectURL(blob)
         const a = document.createElement("a")
         a.href = url
-        const extension = format === "excel" ? "xlsx" : format
+        const extension = exportFormat === "excel" ? "xlsx" : exportFormat
         a.download = `${reportType}-report-${format(new Date(), "yyyy-MM-dd")}.${extension}`
         document.body.appendChild(a)
         a.click()

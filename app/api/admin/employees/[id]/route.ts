@@ -83,7 +83,7 @@ export async function PUT(
     await employee.save()
 
     const employeeObj = employee.toObject()
-    delete employeeObj.password
+    delete (employeeObj as any).password
 
     return NextResponse.json({ employee: employeeObj })
   } catch (error) {

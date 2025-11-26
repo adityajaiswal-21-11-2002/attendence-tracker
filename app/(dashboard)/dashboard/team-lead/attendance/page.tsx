@@ -25,7 +25,7 @@ interface EmployeeStatus {
   email: string
   role: string
   status: "logged_in" | "on_break" | "logged_out"
-  loginTime?: string
+  loginTime?: Date
   currentShift?: string
   totalHours?: number
 }
@@ -38,12 +38,6 @@ export default function TeamLeadAttendancePage() {
     status: "all",
     date: new Date().toISOString().split("T")[0],
   })
-
-  useEffect(() => {
-    fetchAttendance()
-    const interval = setInterval(fetchAttendance, 10000)
-    return () => clearInterval(interval)
-  }, [fetchAttendance])
 
   useEffect(() => {
     let filtered = [...employees]
@@ -61,14 +55,24 @@ export default function TeamLeadAttendancePage() {
         `/api/attendance/live-status?date=${filters.date}`
       )
       const data = await response.json()
+      const employees = (data.employees || []).map((emp: any) => ({
+        ...emp,
+        loginTime: emp.loginTime ? new Date(emp.loginTime) : undefined
+      }))
       // Team lead only sees their team members
-      setEmployees(data.employees || [])
+      setEmployees(employees)
     } catch (error) {
       console.error("Error fetching attendance:", error)
     } finally {
       setLoading(false)
     }
   }, [filters.date])
+
+  useEffect(() => {
+    fetchAttendance()
+    const interval = setInterval(fetchAttendance, 10000)
+    return () => clearInterval(interval)
+  }, [fetchAttendance])
 
   const handleExport = async () => {
     try {

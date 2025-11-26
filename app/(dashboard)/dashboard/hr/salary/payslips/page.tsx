@@ -44,6 +44,7 @@ interface Employee {
   _id: string
   name: string
   email: string
+  role: string
 }
 
 export default function HRPayslipsPage() {
@@ -56,10 +57,6 @@ export default function HRPayslipsPage() {
   const [sending, setSending] = useState(false)
   const [previewDialogOpen, setPreviewDialogOpen] = useState(false)
   const [selectedPayslip, setSelectedPayslip] = useState<Payslip | null>(null)
-
-  useEffect(() => {
-    fetchData()
-  }, [fetchData])
 
   const fetchData = useCallback(async () => {
     try {
@@ -81,6 +78,10 @@ export default function HRPayslipsPage() {
       setLoading(false)
     }
   }, [selectedMonth, selectedYear])
+
+  useEffect(() => {
+    fetchData()
+  }, [fetchData])
 
   const handleGeneratePayslips = async () => {
     if (!confirm(`Generate payslips for all employees for ${format(new Date(selectedYear, selectedMonth - 1, 1), "MMMM yyyy")}?`)) {

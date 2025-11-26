@@ -92,11 +92,6 @@ export default function HRLeavesPage() {
     casualLeave: 0,
   })
 
-  useEffect(() => {
-    fetchData()
-    fetchPendingLeaves()
-  }, [fetchData, fetchPendingLeaves])
-
   const fetchData = useCallback(async () => {
     try {
       const [employeesRes, balancesRes] = await Promise.all([
@@ -125,6 +120,11 @@ export default function HRLeavesPage() {
       console.error("Error fetching pending leaves:", error)
     }
   }, [])
+
+  useEffect(() => {
+    fetchData()
+    fetchPendingLeaves()
+  }, [fetchData, fetchPendingLeaves])
 
   const handleConfigure = (employee: Employee) => {
     setSelectedEmployee(employee)
